@@ -9,10 +9,14 @@ const PostSchema = new mongoose.Schema({
   tags: [{ type: String }],
   image: { type: String },
   imageCloud: { type: String },
-  status: { type: String, enum: ['draft','published'], default: 'draft' },
+  status: { type: String, enum: ['draft','scheduled','published'], default: 'draft' },
+  scheduledAt: { type: Date },
   publishedAt: { type: Date },
   facebookPostId: { type: String },
   instagramPostId: { type: String },
+  publishError: { type: String },
+  facebookError: { type: String },
+  instagramError: { type: String },
   createdBy: { type: String },
 }, { timestamps: true });
 

@@ -29,6 +29,16 @@ export default function Posts(){
     }
   }
 
+  const retryPublish = async (id) => {
+    try {
+      await API.post(`/posts/${id}/retry-publish`)
+      const res = await API.get('/posts/admin/all')
+      setPosts(res.data)
+    } catch (err) {
+      alert(err.response?.data?.message || 'Unable to retry publish.')
+    }
+  }
+
   return (
     <div className="space-y-6 rounded-3xl bg-white p-6 shadow-xl">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -68,10 +78,19 @@ export default function Posts(){
                   <td className="px-4 py-4">{post.title}</td>
                   <td className="px-4 py-4">{post.category || 'General'}</td>
                   <td className="px-4 py-4 capitalize">{post.status}</td>
-                  <td className="px-4 py-4">{post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : '—'}</td>
+                  <td className="px-4 py-4">
+                    {post.status === 'scheduled' && post.scheduledAt
+                      ? new Date(post.scheduledAt).toLocaleString()
+                      : post.publishedAt
+                        ? new Date(post.publishedAt).toLocaleDateString()
+                        : '—'}
+                  </td>
                   <td className="px-4 py-4 space-x-2">
                     <button onClick={() => window.location.href = `/post/${post.slug}`} className="rounded-full border border-slate-300 px-3 py-1 text-sm text-slate-700 hover:bg-slate-100">View</button>
                     <button onClick={() => window.location.href = `/edit-post/${post._id}`} className="rounded-full border border-blue-500 px-3 py-1 text-sm text-blue-700 hover:bg-blue-50">Edit</button>
+                    {(post.publishError || (!post.facebookPostId && post.status === 'published')) && (
+                      <button onClick={() => retryPublish(post._id)} className="rounded-full border border-amber-500 px-3 py-1 text-sm text-amber-700 hover:bg-amber-50">Retry Publish</button>
+                    )}
                     <button onClick={() => deletePost(post._id)} className="rounded-full bg-red-600 px-3 py-1 text-sm text-white hover:bg-red-700">Delete</button>
                   </td>
                 </tr>

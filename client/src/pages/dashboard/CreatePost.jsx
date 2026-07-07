@@ -14,6 +14,7 @@ export default function CreatePost(){
   const [tags, setTags] = useState('')
   const [image, setImage] = useState(null)
   const [status, setStatus] = useState('draft')
+  const [scheduledAt, setScheduledAt] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -30,6 +31,7 @@ export default function CreatePost(){
         setCategory(post.category || '')
         setTags((post.tags || []).join(', '))
         setStatus(post.status || 'draft')
+        setScheduledAt(post.scheduledAt ? new Date(post.scheduledAt).toISOString().slice(0, 16) : '')
       })
       .catch(() => setError('Unable to load post for editing.'))
       .finally(() => setLoading(false))
@@ -47,6 +49,7 @@ export default function CreatePost(){
       form.append('category', category)
       form.append('tags', tags)
       form.append('status', status)
+      if (scheduledAt) form.append('scheduledAt', scheduledAt)
       if (image) form.append('image', image)
 
       if (id) {
@@ -127,12 +130,26 @@ export default function CreatePost(){
                   Draft
                 </label>
                 <label className="flex items-center gap-2 text-slate-700">
+                  <input type="radio" checked={status === 'scheduled'} onChange={() => setStatus('scheduled')} />
+                  Scheduled
+                </label>
+                <label className="flex items-center gap-2 text-slate-700">
                   <input type="radio" checked={status === 'published'} onChange={() => setStatus('published')} />
                   Publish
                 </label>
               </div>
             </div>
           </div>
+
+            <label className="block rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-slate-600">
+              <span className="block text-sm font-medium text-slate-700">Schedule date and time</span>
+              <input
+                type="datetime-local"
+                value={scheduledAt}
+                onChange={e => setScheduledAt(e.target.value)}
+                className="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 focus:border-blue-500 focus:outline-none"
+              />
+            </label>
 
           <button disabled={loading} className="w-full rounded-3xl bg-blue-700 px-6 py-4 text-lg font-semibold text-white shadow-lg transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-slate-400">
             {id ? 'Save changes' : 'Publish post'}

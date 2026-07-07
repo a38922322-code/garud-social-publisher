@@ -14,7 +14,7 @@ export default function Dashboard(){
       try {
         const [postsRes, usersRes] = await Promise.all([
           API.get('/posts/admin/all'),
-          API.get('/auth/users/count')
+          API.get('/auth/admins/count')
         ])
         const allPosts = postsRes.data || []
         setStats({
