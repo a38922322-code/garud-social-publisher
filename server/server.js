@@ -2,12 +2,32 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const path = require('path');
 
 dotenv.config();
 
 const app = express();
-app.use(cors());
+const allowedOrigins = [process.env.FRONTEND_URL, process.env.CORS_ORIGIN]
+  .flatMap((value) => (value ? value.split(',') : []))
+  .map((value) => value.trim())
+  .filter(Boolean);
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (
+      allowedOrigins.length === 0 ||
+      allowedOrigins.includes(origin) ||
+      /^http:\/\/localhost(:\d+)?$/.test(origin) ||
+      /^http:\/\/127\.0\.0\.1(:\d+)?$/.test(origin)
+    ) {
+      return callback(null, true);
+    }
+    return callback(new Error(`Not allowed by CORS: ${origin}`));
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
@@ -29,7 +49,7 @@ app.use('/api/settings', require('./routes/settings'));
 app.use('/api/social', require('./routes/social'));
 
 // Serve uploads
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static('uploads'));
 
 app.get('/', (req, res) => res.json({ ok: true, name: 'Garud Social Publisher API' }));
 
