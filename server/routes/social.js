@@ -13,10 +13,10 @@ const recordError = (error) => {
 };
 
 router.get('/test', auth, async (req, res) => {
-  const accessToken = process.env.META_ACCESS_TOKEN;
+  const accessToken = process.env.FACEBOOK_ACCESS_TOKEN || process.env.META_ACCESS_TOKEN;
   const fbPageId = process.env.FB_PAGE_ID;
   const igBusinessId = process.env.IG_BUSINESS_ID;
-  const backendUrl = process.env.BACKEND_URL;
+  const backendUrl = process.env.BACKEND_URL || `${req.protocol}://${req.get('host')}`;
 
   const response = {
     facebook: 'disconnected',
@@ -26,7 +26,7 @@ router.get('/test', auth, async (req, res) => {
   };
 
   if (!accessToken || !fbPageId || !igBusinessId) {
-    return res.status(400).json({ ...response, message: 'Required environment variables (META_ACCESS_TOKEN, FB_PAGE_ID, IG_BUSINESS_ID) are not set.' });
+    return res.status(400).json({ ...response, message: 'Required environment variables (FACEBOOK_ACCESS_TOKEN or META_ACCESS_TOKEN, FB_PAGE_ID, IG_BUSINESS_ID) are not set.' });
   }
 
   // 1. Test Facebook Connection
@@ -54,22 +54,15 @@ router.get('/test', auth, async (req, res) => {
   }
 
   // 3. Test Public Image Access
-  if (!backendUrl) {
-    response.imagePublicAccess = false;
-    response.imageAccessError = 'BACKEND_URL environment variable is not set. Cannot test public access.';
-  } else {
-    try {
-      // Assuming you have a sample public image or just test an endpoint
-      // For this test, we'll check if the backend root is accessible from the outside.
-      const testUrl = `${backendUrl}/api/social/health-check`; // A simple, non-auth endpoint
-      const publicAccessResp = await axios.get(testUrl, { timeout: 5000 });
-      if (publicAccessResp.status === 200) {
-        response.imagePublicAccess = true;
-      }
-    } catch (e) {
-      response.imagePublicAccess = false;
-      response.imageAccessError = `Failed to access BACKEND_URL (${backendUrl}). Error: ${e.message}`;
+  try {
+    const testUrl = `${backendUrl}/api/social/health-check`;
+    const publicAccessResp = await axios.get(testUrl, { timeout: 5000 });
+    if (publicAccessResp.status === 200) {
+      response.imagePublicAccess = true;
     }
+  } catch (e) {
+    response.imagePublicAccess = false;
+    response.imageAccessError = `Failed to access backend URL (${backendUrl}). Error: ${e.message}`;
   }
 
   res.json(response);
