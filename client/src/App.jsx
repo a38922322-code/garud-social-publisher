@@ -11,6 +11,7 @@ import ManagePosts from './pages/dashboard/Posts'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfService from './pages/TermsOfService'
 import Contact from './pages/Contact'
+import DataDeletion from './pages/DataDeletion'
 import { AuthProvider, useAuth } from './context/AuthContext'
 
 function Protected({ children }){
@@ -36,6 +37,7 @@ export default function App(){
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/data-deletion" element={<DataDeletion />} />
             <Route path="/manage-posts" element={<Protected><ManagePosts/></Protected>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

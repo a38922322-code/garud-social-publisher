@@ -10,6 +10,7 @@ export default function Footer() {
           <Link to="/privacy" className="hover:text-slate-200">Privacy Policy</Link>
           <Link to="/terms" className="hover:text-slate-200">Terms of Service</Link>
           <Link to="/contact" className="hover:text-slate-200">Contact</Link>
+          <Link to="/data-deletion" className="hover:text-slate-200">Data Deletion</Link>
         </div>
       </div>
     </footer>
