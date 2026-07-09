@@ -40,6 +40,21 @@ const normalizePostImage = (post, req) => {
 
 const canUseCloudinary = Boolean(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET);
 
+const generateUniqueSlug = async (title, postId = null) => {
+  const baseSlug = slugify(title, { lower: true, strict: true });
+  let slug = baseSlug;
+  let counter = 2;
+  const query = { slug };
+  if (postId) {
+    query._id = { $ne: postId };
+  }
+  while (await Post.findOne(query)) {
+    slug = `${baseSlug}-${counter++}`;
+    query.slug = slug;
+  }
+  return slug;
+};
+
 const publishToSocial = async (post, req) => {
   const accessToken = process.env.FACEBOOK_ACCESS_TOKEN || process.env.META_ACCESS_TOKEN;
   const fbPageId = process.env.FB_PAGE_ID;
@@ -112,7 +127,7 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
       }
     }
 
-    const slug = slugify(title, { lower: true, strict: true });
+    const slug = await generateUniqueSlug(title);
     const post = new Post({
       title,
       slug,
@@ -151,8 +166,8 @@ router.put('/:id', auth, upload.single('image'), async (req, res) => {
     const { title, content, excerpt, category, tags, status } = req.body;
     const scheduledAt = parseDate(req.body.scheduledAt || req.body.scheduleDate);
     if (title && title !== post.title) {
+      post.slug = await generateUniqueSlug(title, post._id);
       post.title = title;
-      post.slug = slugify(title, { lower: true, strict: true });
     }
     post.content = content || post.content;
     post.excerpt = excerpt || post.excerpt;
