@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 const Contact = () => {
   useEffect(() => {
@@ -14,45 +14,22 @@ const Contact = () => {
     }
   }, []);
 
-  const styles = {
-    container: {
-      maxWidth: '800px',
-      margin: '40px auto',
-      padding: '20px',
-      fontFamily: 'Arial, sans-serif',
-      textAlign: 'center',
-      border: '1px solid #ecf0f1',
-      borderRadius: '8px',
-      boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-      backgroundColor: '#fff',
-    },
-    h1: {
-      color: '#2c3e50',
-      fontSize: '2.2em',
-      marginBottom: '20px',
-    },
-    p: {
-      fontSize: '1.1em',
-      color: '#34495e',
-      margin: '15px 0',
-    },
-    link: {
-      color: '#3498db',
-      textDecoration: 'none',
-      fontWeight: 'bold',
-    },
-  };
-
   return (
-    <div style={styles.container}>
-      <h1 style={styles.h1}>Contact Us</h1>
-      <p style={styles.p}>
-        For support, data deletion requests, or any other inquiries, please reach out to us.
-      </p>
-      <p style={styles.p}><strong>Application:</strong> Garud Social Publisher</p>
-      <p style={styles.p}><strong>Email:</strong> <a href="mailto:support@garudsocialpublisher.com" style={styles.link}>support@garudsocialpublisher.com</a></p>
-      <p style={styles.p}><strong>Website:</strong> <a href="https://garud-social-publisher.vercel.app" style={styles.link} target="_blank" rel="noopener noreferrer">garud-social-publisher.vercel.app</a></p>
-      <p style={styles.p}><strong>Support:</strong> We aim to respond to all inquiries within 24-48 hours.</p>
+    <div className="bg-slate-50 p-6">
+      <div className="mx-auto max-w-2xl rounded-3xl bg-white p-8 text-center shadow-xl">
+        <h1 className="text-4xl font-bold text-slate-900">Contact Us</h1>
+        <p className="mt-4 text-lg text-slate-600">
+          For support, data deletion requests, or any other inquiries, please reach out to us.
+        </p>
+        <div className="mt-8 space-y-4 text-left">
+          <p><strong>Company:</strong> GarudStacks Pvt. Ltd.</p>
+          <p><strong>Application:</strong> Garud Social Publisher</p>
+          <p><strong>Support Email:</strong> <a href="mailto:a38922322@gmail.com" className="text-blue-700 hover:underline">a38922322@gmail.com</a></p>
+          <p><strong>Website:</strong> <a href="https://garud-social-publisher.vercel.app" className="text-blue-700 hover:underline" target="_blank" rel="noopener noreferrer">https://garud-social-publisher.vercel.app</a></p>
+          <p><strong>Business Hours:</strong> Monday - Friday, 9:00 AM - 5:00 PM (IST)</p>
+          <p><strong>Response Time:</strong> We aim to respond to all inquiries within 24-48 business hours.</p>
+        </div>
+      </div>
     </div>
   );
 };
