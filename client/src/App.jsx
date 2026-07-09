@@ -8,6 +8,9 @@ import AdminLogin from './pages/AdminLogin'
 import Dashboard from './pages/dashboard/Dashboard'
 import CreatePost from './pages/dashboard/CreatePost'
 import ManagePosts from './pages/dashboard/Posts'
+import PrivacyPolicy from './pages/PrivacyPolicy'
+import TermsOfService from './pages/TermsOfService'
+import Contact from './pages/Contact'
 import { AuthProvider, useAuth } from './context/AuthContext'
 
 function Protected({ children }){
@@ -30,6 +33,9 @@ export default function App(){
             <Route path="/dashboard" element={<Protected><Dashboard/></Protected>} />
             <Route path="/create-post" element={<Protected><CreatePost/></Protected>} />
             <Route path="/edit-post/:id" element={<Protected><CreatePost/></Protected>} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/contact" element={<Contact />} />
             <Route path="/manage-posts" element={<Protected><ManagePosts/></Protected>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
